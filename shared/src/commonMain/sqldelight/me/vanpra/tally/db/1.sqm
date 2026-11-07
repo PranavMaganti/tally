@@ -1,0 +1,7 @@
+-- Version 2: one name per club. Golfshot wrote 1W, Pw, Sw and 4Hy; Tally says Driver, PW, SW and Hybrid.
+UPDATE hole SET tee_club = 'Driver' WHERE upper(tee_club) IN ('1W', '1WOOD');
+UPDATE hole SET tee_club = 'PW' WHERE upper(tee_club) = 'PW';
+UPDATE hole SET tee_club = 'GW' WHERE upper(tee_club) = 'GW';
+UPDATE hole SET tee_club = 'SW' WHERE upper(tee_club) = 'SW';
+UPDATE hole SET tee_club = 'LW' WHERE upper(tee_club) = 'LW';
+UPDATE hole SET tee_club = 'Hybrid' WHERE upper(tee_club) LIKE '%HY';

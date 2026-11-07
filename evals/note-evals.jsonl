@@ -1,0 +1,29 @@
+{"par": 4, "note": "8, lost a ball right off the tee took a penalty drop 2 shots, hit a nice iron in to 10 feet but missed the putt low", "expect": {"strokes": 8, "putts": 2, "teeShot": "RIGHT", "penalties": 2, "firstPuttFeet": 10, "puttMiss": "LOW"}}
+{"par": 4, "note": "par, fairway, 2 putts", "expect": {"strokes": 4, "putts": 2, "teeShot": "FAIRWAY"}}
+{"par": 3, "note": "7 iron to the back of the green, three putted for a 4", "expect": {"strokes": 4, "putts": 3, "teeClub": "7i"}}
+{"par": 4, "note": "bogey, sliced it into the trees, punched out", "expect": {"strokes": 5, "teeShot": "RIGHT"}}
+{"par": 5, "note": "6. drive left in the rough, two to get out of the fairway bunker, two putts", "expect": {"strokes": 6, "putts": 2, "teeShot": "LEFT", "bunkerShots": 2}}
+{"par": 4, "note": "double. went in the water on the right with my drive", "expect": {"strokes": 6, "teeShot": "RIGHT", "penalties": 1}}
+{"par": 4, "note": "pulled the driver OB, reloaded, made 7", "expect": {"strokes": 7, "teeShot": "LEFT", "penalties": 1, "teeClub": "Driver"}}
+{"par": 3, "note": "birdie! 9 iron to 4 feet", "expect": {"strokes": 2, "putts": 1, "firstPuttFeet": 4, "teeClub": "9i"}}
+{"par": 4, "note": "drive down the middle, wedge to 15 feet, two putts for par", "expect": {"strokes": 4, "putts": 2, "teeShot": "FAIRWAY", "firstPuttFeet": 15}}
+{"par": 5, "note": "duffed my chip, then chipped in", "expect": {"putts": 0}}
+{"par": 4, "note": "5", "expect": {"strokes": 5}}
+{"par": 4, "note": "hit it left", "expect": {"teeShot": "LEFT"}}
+{"par": 4, "note": "greenside bunker, took 3 to get out, 3 putt, 9", "expect": {"strokes": 9, "putts": 3, "bunkerShots": 3}}
+{"par": 3, "note": "plugged in the bunker, splashed out and one putt for par", "expect": {"strokes": 3, "putts": 1, "bunkerShots": 1}}
+{"par": 4, "note": "triple, two balls in the lake", "expect": {"strokes": 7, "penalties": 2}}
+{"par": 4, "note": "sorry, it was a 6 not a 5. drive right", "expect": {"strokes": 6, "teeShot": "RIGHT"}}
+{"par": 4, "note": "6, hit first shot left into tee, chipped out, got a really good 9 iron onto the green and then 3 putt from 20 feet. First putt was a bad one, it ended up like 8 feet away", "expect": {"strokes": 6, "putts": 3, "teeShot": "LEFT", "firstPuttFeet": 20, "leaveFeet": 8}}
+{"par": 4, "note": "Six hit my drive right into the trees had to chip out then two putts", "expect": {"strokes": 6, "putts": 2, "teeShot": "RIGHT"}}
+{"par": 4, "note": "Gotta 6 drove it right into the trees chipped out got nine iron onto the green but then I had really bad part hit it to 8 ft from like 20 ft and then just too far from there", "expect": {"strokes": 6, "putts": 3, "teeShot": "RIGHT", "firstPuttFeet": 20, "leaveFeet": 8}, "why": "raw dictation; 'too far from there' = two from there"}
+{"par": 4, "note": "Need a six hit my T-shirt a bit left but just in the left rough. May the 6th my T-shirt bit left I then made a three-pot and it.", "expect": {"strokes": 6, "putts": 3, "teeShot": "LEFT"}, "why": "raw dictation before speech fixes"}
+{"par": 4, "note": "Got a 6 drove it right into the trees chipped out then putted it to 8 ft from 20 ft and then two from there", "expect": {"strokes": 6, "putts": 3, "teeShot": "RIGHT", "firstPuttFeet": 20, "leaveFeet": 8}, "why": "first putt from 20 ft to 8 ft, then two more"}
+{"par": 5, "note": "bogey, two putts from 30 feet", "expect": {"strokes": 6, "putts": 2, "firstPuttFeet": 30}, "why": "control: plain two-putt, must not become 3"}
+{"par": 4, "note": "par, lagged it to 3 feet from 40 and tapped in", "expect": {"strokes": 4, "putts": 2, "firstPuttFeet": 40, "leaveFeet": 3}, "why": "putt story that adds up to 2"}
+{"par": 4, "note": "5 iron right, second shot 6 iron short right of the green. Was 45 yards chipping over bunker but put it in and then chipped out to about 20 feet and 2 put.", "expect": {"strokes": 6, "putts": 2, "teeShot": "RIGHT", "bunkerShots": 1, "firstPuttFeet": 20, "teeClub": "5i"}, "why": "no score given: 5i, 6i, chip into bunker, out, 2 putts = 6"}
+{"par": 4, "note": "driver down the middle, 8 iron onto the green, two putts", "expect": {"strokes": 4, "putts": 2, "teeShot": "FAIRWAY", "teeClub": "Driver"}, "why": "every shot listed: 4"}
+{"par": 3, "note": "7 iron to 15 feet, holed it", "expect": {"strokes": 2, "putts": 1, "firstPuttFeet": 15, "teeClub": "7i"}, "why": "every shot listed: 2"}
+{"par": 4, "note": "3 wood left into the trees, two putts", "expect": {"putts": 2, "teeShot": "LEFT", "teeClub": "3W"}, "why": "shots between tee and green not described: don't count a score"}
+{"par": 5, "note": "hybrid off the tee, found the fairway, then I don't remember", "expect": {"teeShot": "FAIRWAY", "teeClub": "Hybrid"}, "why": "incomplete: no score"}
+{"par":4,"note":"Pulled a driver right but it bounced out. Hit a good 5 iron to the left of the green 210 and then up and down to 6 feet in 1 putt for a 4","expect":{"strokes":4,"putts":1,"teeShot":"RIGHT","teeClub":"Driver","firstPuttFeet":6},"why":"says 'right' outright though 'pulled' usually means left"}

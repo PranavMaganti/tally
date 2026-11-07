@@ -1,0 +1,140 @@
+-- Every round, hole, note and marked shot. Enums are stored by name; dates as yyyy-MM-dd; times in epoch millis.
+
+CREATE TABLE round (
+    id TEXT NOT NULL PRIMARY KEY,
+    course_name TEXT NOT NULL,
+    course_id TEXT,
+    tee TEXT,
+    date TEXT NOT NULL,
+    started_at INTEGER,
+    finished_at INTEGER,
+    -- TALLY or GOLFSHOT
+    source TEXT NOT NULL
+);
+
+CREATE INDEX round_by_date ON round(date);
+
+CREATE TABLE hole (
+    round_id TEXT NOT NULL,
+    number INTEGER AS kotlin.Int NOT NULL,
+    par INTEGER AS kotlin.Int,
+    strokes INTEGER AS kotlin.Int,
+    putts INTEGER AS kotlin.Int,
+    tee_shot TEXT,
+    penalties INTEGER AS kotlin.Int,
+    bunker_shots INTEGER AS kotlin.Int,
+    tee_club TEXT,
+    first_putt_feet INTEGER AS kotlin.Int,
+    first_putt_miss TEXT,
+    leave_feet INTEGER AS kotlin.Int,
+    picked_up INTEGER AS kotlin.Boolean NOT NULL DEFAULT 0,
+    -- Third and later putts, in feet, comma separated.
+    later_putt_feet TEXT,
+    gir_recorded INTEGER AS kotlin.Boolean,
+    note_read_by TEXT,
+    -- A better reading's suggested changes, as JSON.
+    suggested TEXT,
+    PRIMARY KEY (round_id, number)
+);
+
+CREATE TABLE note (
+    round_id TEXT NOT NULL,
+    hole_number INTEGER AS kotlin.Int NOT NULL,
+    position INTEGER AS kotlin.Int NOT NULL,
+    text TEXT NOT NULL,
+    -- TYPED or VOICE
+    source TEXT NOT NULL,
+    created_at INTEGER NOT NULL,
+    PRIMARY KEY (round_id, hole_number, position)
+);
+
+-- Where your ball was before each shot, as marked.
+CREATE TABLE shot (
+    round_id TEXT NOT NULL,
+    hole_number INTEGER AS kotlin.Int NOT NULL,
+    position INTEGER AS kotlin.Int NOT NULL,
+    lat REAL NOT NULL,
+    lon REAL NOT NULL,
+    time_millis INTEGER NOT NULL,
+    club TEXT,
+    club_by_you INTEGER AS kotlin.Boolean NOT NULL DEFAULT 0,
+    auto INTEGER AS kotlin.Boolean NOT NULL DEFAULT 0,
+    PRIMARY KEY (round_id, hole_number, position)
+);
+
+CREATE INDEX shot_by_club ON shot(club);
+
+-- Who set each card field: MANUAL, IMPORTED, AI or DEFAULT.
+CREATE TABLE field_source (
+    round_id TEXT NOT NULL,
+    hole_number INTEGER AS kotlin.Int NOT NULL,
+    field TEXT NOT NULL,
+    source TEXT NOT NULL,
+    PRIMARY KEY (round_id, hole_number, field)
+);
+
+CREATE TABLE setting (
+    key TEXT NOT NULL PRIMARY KEY,
+    value TEXT NOT NULL
+);
+
+-- Loading everything at start-up.
+allRounds:
+SELECT * FROM round;
+
+allHoles:
+SELECT * FROM hole ORDER BY round_id, number;
+
+allNotes:
+SELECT * FROM note ORDER BY round_id, hole_number, position;
+
+allShots:
+SELECT * FROM shot ORDER BY round_id, hole_number, position;
+
+allFieldSources:
+SELECT * FROM field_source;
+
+roundCount:
+SELECT count(*) FROM round;
+
+-- Writing.
+upsertRound:
+INSERT OR REPLACE INTO round VALUES ?;
+
+finishRound:
+UPDATE round SET finished_at = :finishedAt WHERE id = :id;
+
+upsertHole:
+INSERT OR REPLACE INTO hole VALUES ?;
+
+insertNote:
+INSERT INTO note VALUES ?;
+
+insertShot:
+INSERT INTO shot VALUES ?;
+
+insertFieldSource:
+INSERT INTO field_source VALUES ?;
+
+deleteHoleChildren {
+    DELETE FROM note WHERE round_id = :roundId AND hole_number = :number;
+    DELETE FROM shot WHERE round_id = :roundId AND hole_number = :number;
+    DELETE FROM field_source WHERE round_id = :roundId AND hole_number = :number;
+}
+
+deleteRound {
+    DELETE FROM note WHERE round_id = :id;
+    DELETE FROM shot WHERE round_id = :id;
+    DELETE FROM field_source WHERE round_id = :id;
+    DELETE FROM hole WHERE round_id = :id;
+    DELETE FROM round WHERE id = :id;
+}
+
+setting:
+SELECT value FROM setting WHERE key = ?;
+
+putSetting:
+INSERT OR REPLACE INTO setting VALUES (?, ?);
+
+removeSetting:
+DELETE FROM setting WHERE key = ?;

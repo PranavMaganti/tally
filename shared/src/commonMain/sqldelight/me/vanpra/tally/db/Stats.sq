@@ -1,0 +1,96 @@
+-- Stats over a chosen set of rounds (the window and course picked on the Stats screen).
+-- A hole counts once it has a score; GIR is the recorded one, else worked out from strokes and putts.
+
+-- How often each kind of score comes up.
+scoreMix:
+SELECT
+    coalesce(sum(CASE WHEN strokes < par THEN 1 ELSE 0 END), 0) AS under_par,
+    coalesce(sum(CASE WHEN strokes = par THEN 1 ELSE 0 END), 0) AS pars,
+    coalesce(sum(CASE WHEN strokes = par + 1 THEN 1 ELSE 0 END), 0) AS bogeys,
+    coalesce(sum(CASE WHEN strokes = par + 2 THEN 1 ELSE 0 END), 0) AS doubles,
+    coalesce(sum(CASE WHEN strokes >= par + 3 THEN 1 ELSE 0 END), 0) AS worse,
+    count(*) AS holes
+FROM hole
+WHERE round_id IN :rounds AND strokes IS NOT NULL AND par IS NOT NULL;
+
+-- Each club off the tee on par 4s and 5s: where it went, and what you scored after it.
+teeByClub:
+SELECT
+    tee_club,
+    count(*) AS shots,
+    coalesce(sum(CASE WHEN tee_shot = 'FAIRWAY' THEN 1 ELSE 0 END), 0) AS fairway,
+    coalesce(sum(CASE WHEN tee_shot = 'LEFT' THEN 1 ELSE 0 END), 0) AS left_,
+    coalesce(sum(CASE WHEN tee_shot = 'RIGHT' THEN 1 ELSE 0 END), 0) AS right_,
+    coalesce(avg(strokes - par), 0.0) AS to_par
+FROM hole
+WHERE round_id IN :rounds AND par >= 4 AND strokes IS NOT NULL AND tee_club IS NOT NULL AND tee_shot IS NOT NULL
+GROUP BY tee_club
+ORDER BY shots DESC;
+
+-- Greens hit, and when they're missed, how often par is saved anyway.
+greens:
+SELECT
+    count(*) AS holes,
+    coalesce(sum(CASE WHEN coalesce(gir_recorded, strokes - putts <= par - 2) THEN 1 ELSE 0 END), 0) AS hit,
+    coalesce(sum(CASE WHEN NOT coalesce(gir_recorded, strokes - putts <= par - 2) AND strokes <= par THEN 1 ELSE 0 END), 0) AS saved,
+    coalesce(sum(CASE WHEN coalesce(gir_recorded, strokes - putts <= par - 2) THEN putts ELSE 0 END), 0) AS putts_on_hit
+FROM hole
+WHERE round_id IN :rounds AND strokes IS NOT NULL AND putts IS NOT NULL AND par IS NOT NULL;
+
+-- Putts per hole: one-putts, three-putts and the total.
+putting:
+SELECT
+    count(*) AS holes,
+    coalesce(sum(putts), 0) AS putts,
+    coalesce(sum(CASE WHEN putts <= 1 THEN 1 ELSE 0 END), 0) AS one_putts,
+    coalesce(sum(CASE WHEN putts >= 3 THEN 1 ELSE 0 END), 0) AS three_putts
+FROM hole
+WHERE round_id IN :rounds AND strokes IS NOT NULL AND putts IS NOT NULL;
+
+-- From your notes: how the first putt went, by how long it was.
+puttsByDistance:
+SELECT
+    CASE
+        WHEN first_putt_feet <= 3 THEN 0
+        WHEN first_putt_feet <= 6 THEN 1
+        WHEN first_putt_feet <= 10 THEN 2
+        WHEN first_putt_feet <= 20 THEN 3
+        ELSE 4
+    END AS band,
+    count(*) AS holes,
+    coalesce(sum(CASE WHEN putts = 1 THEN 1 ELSE 0 END), 0) AS holed,
+    coalesce(sum(CASE WHEN putts >= 3 THEN 1 ELSE 0 END), 0) AS three_putts
+FROM hole
+WHERE round_id IN :rounds AND first_putt_feet IS NOT NULL AND putts >= 1
+GROUP BY band
+ORDER BY band;
+
+-- Hole by hole on one course.
+holeByHole:
+SELECT
+    number,
+    max(par) AS par,
+    avg(strokes) AS average,
+    count(*) AS played,
+    min(strokes) AS best
+FROM hole
+WHERE round_id IN :rounds AND strokes IS NOT NULL
+GROUP BY number
+ORDER BY number;
+
+-- Penalty strokes and bunker shots, where they were noted.
+trouble:
+SELECT
+    coalesce(sum(penalties), 0) AS penalties,
+    coalesce(sum(bunker_shots), 0) AS bunker_shots,
+    count(*) AS holes
+FROM hole
+WHERE round_id IN :rounds AND strokes IS NOT NULL;
+
+-- Average against par on par 3s, 4s and 5s.
+byPar:
+SELECT par, avg(strokes - par) AS to_par, count(*) AS holes
+FROM hole
+WHERE round_id IN :rounds AND strokes IS NOT NULL AND par BETWEEN 3 AND 5
+GROUP BY par
+ORDER BY par;
