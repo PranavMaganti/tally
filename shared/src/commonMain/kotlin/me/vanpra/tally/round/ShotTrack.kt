@@ -107,7 +107,8 @@ object ShotTrack {
             val shot = i - onTee - 1
             when {
                 shot < 0 || m.clubByYou -> m
-                else -> m.copy(club = named.getOrNull(shot))
+                // The note names this shot's club, or it keeps the one it had.
+                else -> m.copy(club = named.getOrNull(shot) ?: m.club)
             }
         }
     }

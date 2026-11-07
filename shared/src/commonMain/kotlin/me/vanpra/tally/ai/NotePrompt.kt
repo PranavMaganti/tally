@@ -131,12 +131,16 @@ object NotePrompt {
 
     /** "5 iron right, …", "pulled the driver OB, …", "7 iron to the back of the green": the first phrase's club is the tee club. */
     private fun clubInFirstPhrase(note: String): String? {
-        val first = Regex("""^[^,.;!?]*""").find(note.trim())?.value?.split(Regex("""\b(?:then|and then|but)\b""", RegexOption.IGNORE_CASE))?.firstOrNull().orEmpty()
+        // A note that opens with just the score ("5. Driver down the left") starts its first shot after it.
+        val phrases = note.trim().split(Regex("""[,.;!?]""")).dropWhile { it.isBlank() || SCORE_ONLY.matches(it) }
+        val first = phrases.firstOrNull()?.split(Regex("""\b(?:then|and then|but)\b""", RegexOption.IGNORE_CASE))?.firstOrNull().orEmpty()
         val club = Clubs.mentioned(first).firstOrNull() ?: return null
         // Only if no other shot comes first ("Gotta 6 drove it right … nine iron onto the green" isn't a 9 iron tee shot).
         val otherShot = OTHER_SHOT.find(first)?.range?.first ?: Int.MAX_VALUE
         return club.first.takeIf { club.second.first < otherShot }
     }
+
+    private val SCORE_ONLY = Regex("""\s*(?:\d{1,2}|par|birdie|bogey|eagle|double(?: bogey)?|triple(?: bogey)?|(?:got|had|took) an? \d{1,2})\s*""", RegexOption.IGNORE_CASE)
 
     private val OTHER_SHOT = Regex("""\b(?:drove|drive|chip\w*|pitch\w*|punch\w*|putt\w*|second|approach|onto|on to)\b""", RegexOption.IGNORE_CASE)
 

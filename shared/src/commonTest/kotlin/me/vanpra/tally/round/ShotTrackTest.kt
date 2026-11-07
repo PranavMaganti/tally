@@ -82,4 +82,9 @@ class ShotTrackTest {
         val marked = ShotTrack.withClubsFromNote(hole, listOf(mark(220.0)), "Driver, 9 iron on, 2 putts", null, CardCounts(4, 2, 0))
         assertEquals(listOf("Driver"), marked.map { it.club })
     }
+
+    @Test fun aClubAlreadyOnAShotIsKeptWhenTheNoteDoesntSay() {
+        val marked = ShotTrack.withClubsFromNote(hole, listOf(mark(220.0, "Driver")), "5, chipped to 4 feet", null)
+        assertEquals(listOf("Driver"), marked.map { it.club })
+    }
 }

@@ -271,4 +271,10 @@ class NoteReadingTest {
         // A one-putt can't have missed.
         assertNull(NotePrompt.parse("""{"putts":1,"miss":"low","leave_ft":3}""", par4, "one putt from 3 feet")!!.puttMiss)
     }
+
+    @Test fun teeClubAfterALeadingScore() {
+        assertEquals("Driver", NotePrompt.quickRead("5. Driver down the left, 8 iron just short", 4).teeClub)
+        assertEquals("3W", NotePrompt.quickRead("Par, 3 wood down the middle, 7 iron to 25 feet", 4).teeClub)
+        assertEquals("Driver", NotePrompt.quickRead("Driver right, punched out", 4).teeClub)
+    }
 }
